@@ -17,8 +17,8 @@ mongoose.connect(process.env.MONGODB_URI)
 const app = express();
 app.use(express.json())
 
-app.use('/api/user', userRoute)
-app.use('/api/auth', authRoute)
+app.use('/user', userRoute)
+app.use('/auth', authRoute)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT}`)
