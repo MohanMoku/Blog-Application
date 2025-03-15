@@ -6,6 +6,7 @@ import { fireBase } from '../firebase'
 import { useDispatch } from 'react-redux'
 import { signInSuccess } from '../redux/user/UserSlice'
 import { useNavigate } from 'react-router-dom'
+import {normalizeUserData} from '../utils/userUtils'
 
 const OAuth = () => {
     
@@ -23,6 +24,7 @@ const OAuth = () => {
             const res = await fetch('http://localhost:4000/auth/google', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({
                     name: resultFromGoogle.user.displayName,
                     email: resultFromGoogle.user.email,
@@ -32,7 +34,8 @@ const OAuth = () => {
 
             const data = await res.json()
             if(res.ok){
-                dispatch(signInSuccess(data))
+                const normalizedData = normalizeUserData(data)
+                dispatch(signInSuccess(normalizedData))
                 navigate('/')
             }
 

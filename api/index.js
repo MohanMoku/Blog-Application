@@ -17,7 +17,21 @@ mongoose.connect(process.env.MONGODB_URI)
     })
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'http://localhost:3000', // change this to your frontend URL when deploying to production
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'],
+    exposedHeaders: ['set-cookie'],
+}));
+
+// app.use((req, res, next) => {
+//     console.log('Request URL:', req.url);
+//     console.log('Cookies received:', req.cookies);
+//     console.log('Headers:', req.headers);
+//     next();
+// });
+
 app.use(express.json())
 app.use(cookieParser())
 

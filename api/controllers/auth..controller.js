@@ -58,8 +58,14 @@ export const signin = async (req, res, next) => {
         const { password: pass, ...rest } = validUser._doc;
 
         res
+            .cookie('access_token', token, {
+                httpOnly: true,
+                secure: false, // set to true in production
+                sameSite: 'lax',
+                path: '/',
+                maxAge: 3 * 24 * 60 * 60 * 1000 // 3 days
+            })
             .status(200)
-            .cookie('access_token', token, { httpOnly: true })
             .json({
                 message: 'Login Successful',
                 user: rest,
@@ -84,8 +90,14 @@ export const google = async (req, res, next) => {
             const { password, ...rest } = user._doc
 
             res
+                .cookie('access_token', token, {
+                    httpOnly: true,
+                    secure: false,
+                    sameSite: 'lax',
+                    path: '/',
+                    maxAge: 3 * 24 * 60 * 60 * 1000
+                })
                 .status(200)
-                .cookie('access_token', token, { httpOnly: true })
                 .json({
                     message: 'Login Successful',
                     user: rest,
@@ -109,8 +121,14 @@ export const google = async (req, res, next) => {
             const { password, ...rest } = newUser._doc
 
             res
+                .cookie('access_token', token, {
+                    httpOnly: true,
+                    secure: false,
+                    sameSite: 'lax',
+                    path: '/',
+                    maxAge: 3 * 24 * 60 * 60 * 1000
+                })
                 .status(200)
-                .cookie('access_token', token, { httpOnly: true })
                 .json(rest)
         }
     } catch (error) {

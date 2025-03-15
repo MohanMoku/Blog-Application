@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { signInStart, signInSuccess, signInFailure } from '../redux/user/UserSlice'
 import OAuth from '../components/OAuth'
+import { normalizeUserData } from '../utils/userUtils'
 
 const SignIn = () => {
 
@@ -31,6 +32,7 @@ const SignIn = () => {
       const res = await fetch('http://localhost:4000/auth/sign-in', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify(formData)
       })
 
@@ -41,7 +43,8 @@ const SignIn = () => {
       }
 
       if (res.ok) {
-        dispatch(signInSuccess(data))
+        const normalizedData = normalizeUserData(data)
+        dispatch(signInSuccess(normalizedData))
         navigate('/')
       }
 
