@@ -19,7 +19,15 @@ const userSchema = new mongoose.Schema({
     profilePicture:{
         type: String,
         default:'https://img.freepik.com/free-vector/blue-circle-with-white-user_78370-4707.jpg'
-    }
+    },
+
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
+
+    
+
 }, { timestamps: true })
 
 const User = mongoose.model('User', userSchema);

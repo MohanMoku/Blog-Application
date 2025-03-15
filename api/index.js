@@ -25,6 +25,14 @@ app.use(cors({
     exposedHeaders: ['set-cookie'],
 }));
 
+// app.use('*', (req, res) => {
+//     res.status(404).json({
+//         success: false,
+//         statusCode: 404,
+//         message: 'API endpoint not found'
+//     });
+// });
+
 // app.use((req, res, next) => {
 //     console.log('Request URL:', req.url);
 //     console.log('Cookies received:', req.cookies);

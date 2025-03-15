@@ -9,6 +9,9 @@ import Dashboard from "./pages/Dashboard";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
+import NotFound from "./pages/NotFound";
+import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
+import CreatePost from "./pages/CreatePost";
 
 function App() {
   return (
@@ -22,7 +25,12 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path='/dashboard' element={<Dashboard />} />
         </Route>
+        <Route element={<OnlyAdminPrivateRoute />}>
+          <Route path='/create-post' element={<CreatePost />} />
+        </Route>
         <Route path='/about' element={<About />} />
+        {/* 404 route - must be last */}
+        <Route path='*' element={<NotFound />} />
       </Routes>
       <Footer />
     </BrowserRouter>

@@ -1,9 +1,9 @@
 import { Alert, Button, Modal, TextInput } from 'flowbite-react'
 import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { 
-    updateUserFailure, 
-    updateUserStart, 
+import {
+    updateUserFailure,
+    updateUserStart,
     updateUserSuccess,
     deleteUserFailure,
     deleteUserStart,
@@ -11,14 +11,19 @@ import {
     signoutSuccess
 } from '../redux/user/UserSlice'
 import { HiOutlineExclamationCircle } from 'react-icons/hi'
+import { Link } from 'react-router-dom'
 
 export default function DashProfile() {
 
-    const { currentUser, error } = useSelector((state) => state.user)
-    
+    const { currentUser, error, loading } = useSelector((state) => state.user)
+
     const [imageFile, setImageFile] = useState('')
     const [imageFileUrl, setImageFileUrl] = useState(currentUser.profilePicture)
     const [formData, setFormData] = useState({})
+    const [imageFileUploadError, setImageFileUploadError] = useState(null);
+    const [imageFileUploading, setImageFileUploading] = useState(false);
+    const [updateUserDataSuccess, setUpdateUserDataSuccess] = useState(null);
+    const [updateUserError, setUpdateUserError] = useState(null);
     const [showModel, setShowModel] = useState(false)
     const filePickerRef = useRef()
     const dispatch = useDispatch()
@@ -39,6 +44,9 @@ export default function DashProfile() {
 
     const uploadImage = async (file) => {
 
+        setImageFileUploading(true);
+        setImageFileUploadError(null);
+
         const data = new FormData()
         data.append('file', file)
         data.append('upload_preset', process.env.REACT_APP_CLOUDINARY_UPLOAD_PRESET)
@@ -48,6 +56,13 @@ export default function DashProfile() {
             method: 'POST',
             body: data
         })
+
+        if (!res.ok) {
+            setImageFileUploadError('Could not upload image (File must be less than 2MB)')
+            setImageFileUploading(false);
+            return
+        }
+        setImageFileUploading(false);
 
         const imageUrlData = await res.json()
         setImageFileUrl(imageUrlData.secure_url)
@@ -62,16 +77,24 @@ export default function DashProfile() {
 
     const handleSubmit = async (e) => {
         e.preventDefault()
+        setUpdateUserError(null);
+        setUpdateUserDataSuccess(null);
         if (Object.keys(formData).length === 0) {
-            alert('No changes made');
+            setUpdateUserError('No changes made');
             return;
         }
+
+        if (imageFileUploading) {
+            setUpdateUserError('Please wait for image to upload');
+            return;
+        }
+
         try {
             dispatch(updateUserStart())
             const res = await fetch(`http://localhost:4000/user/update/${currentUser._id}`, {
                 method: 'PUT',
                 credentials: 'include',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
@@ -83,13 +106,16 @@ export default function DashProfile() {
             const data = await res.json()
             if (!res.ok) {
                 dispatch(updateUserFailure(data.message))
+                setUpdateUserError(data.message);
             } else {
                 dispatch(updateUserSuccess(data))
+                setUpdateUserDataSuccess("User's profile updated successfully");
             }
         } catch (error) {
             dispatch(updateUserFailure(error.message))
+            setUpdateUserError(error.message);
         }
-    }    
+    }
 
     const HandelDeleteUser = async () => {
         setShowModel(false)
@@ -98,7 +124,7 @@ export default function DashProfile() {
             const res = await fetch(`http://localhost:4000/user/delete/${currentUser._id}`, {
                 method: 'DELETE',
                 credentials: 'include',
-                headers: { 
+                headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json'
                 },
@@ -124,13 +150,13 @@ export default function DashProfile() {
             if (!res.ok) {
                 console.log(data.message);
             }
-            else{
+            else {
                 dispatch(signoutSuccess())
             }
 
         } catch (error) {
             console.log(error);
-            
+
         }
     }
 
@@ -147,13 +173,30 @@ export default function DashProfile() {
                     <img src={imageFileUrl || currentUser.profilePicture} alt="img" className='rounded-full w-full h-full object-cover border-8 border-[#746e6e]' />
                 </div>
 
+                {imageFileUploadError && (
+                    <Alert color='failure'>{imageFileUploadError}</Alert>
+                )}
+
                 <TextInput type='text' id='username' placeholder='username' defaultValue={currentUser.username} onChange={handleChange} />
-                <TextInput type='email' id='email' placeholder='email' defaultValue={currentUser.email} onChange={handleChange} readOnly/>
+                <TextInput type='email' id='email' placeholder='email' defaultValue={currentUser.email} onChange={handleChange} readOnly />
                 <TextInput type='password' id='password' placeholder='password' onChange={handleChange} />
 
-                <Button type='submit' gradientDuoTone='purpleToBlue' outline>
-                    Update
+                <Button type='submit' gradientDuoTone='purpleToBlue' outline disabled={loading || imageFileUploading}>
+                    {loading ? 'Loading...' : 'Update'}
                 </Button>
+
+                {
+                    currentUser.isAdmin && (
+
+                        <Link to={'/create-post'}>
+                            <Button type='button' gradientDuoTone='purpleToBlue' className='w-full'>
+                                Create a post
+                            </Button>
+                        </Link>
+
+
+                    )
+                }
 
             </form>
 
@@ -164,8 +207,20 @@ export default function DashProfile() {
 
             {error && <Alert className='text-red-500'>{error}</Alert>}
 
+            {updateUserError && (
+                <Alert color='failure' className='mt-5'>
+                    {updateUserError}
+                </Alert>
+            )}
+
+            {updateUserDataSuccess && (
+                <Alert color='success' className='mt-5'>
+                    {updateUserDataSuccess}
+                </Alert>
+            )}
+
             <Modal show={showModel} onClose={() => setShowModel(false)} size='md' popup>
-                <Modal.Header/>
+                <Modal.Header />
 
                 <Modal.Body>
                     <div className="text-center">
