@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import userRoute from './routes/user.route.js'
 import authRoute from './routes/auth.route.js'
+import postRoute from './routes/post.route.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 
@@ -45,6 +46,7 @@ app.use(cookieParser())
 
 app.use('/user', userRoute)
 app.use('/auth', authRoute)
+app.use('/post', postRoute)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT}`)
