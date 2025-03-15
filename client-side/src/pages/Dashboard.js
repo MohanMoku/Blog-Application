@@ -11,8 +11,8 @@ const Dashboard = () => {
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search)
     const tabFromUrl = urlParams.get('tab')
-    if (tabFromUrl === 'profile') {
-      setTab('profile')
+    if (tabFromUrl) {
+      setTab(tabFromUrl)
     }
   }, [location.search])
 

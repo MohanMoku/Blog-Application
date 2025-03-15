@@ -9,7 +9,7 @@ import Dashboard from "./pages/Dashboard";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import PrivateRoute from "./components/PrivateRoute";
-import NotFound from "./pages/NotFound";
+// import NotFound from "./pages/NotFound";
 import OnlyAdminPrivateRoute from "./components/OnlyAdminPrivateRoute";
 import CreatePost from "./pages/CreatePost";
 
@@ -30,7 +30,7 @@ function App() {
         </Route>
         <Route path='/about' element={<About />} />
         {/* 404 route - must be last */}
-        <Route path='*' element={<NotFound />} />
+        {/* <Route path='*' element={<NotFound />} /> */}
       </Routes>
       <Footer />
     </BrowserRouter>
