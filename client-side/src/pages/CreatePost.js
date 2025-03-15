@@ -1,10 +1,8 @@
 import { Alert, Button, FileInput, Textarea, TextInput } from 'flowbite-react'
 import React, { useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
 import { useNavigate } from 'react-router-dom'
-// import { createPostFailure, createPostStart, createPostSuccess } from '../redux/post/postSlice'
 
 const CreatePost = () => {
 
