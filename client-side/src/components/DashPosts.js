@@ -16,8 +16,8 @@ export default function DashPosts() {
     const fetchPosts = async () => {
 
       try {
-        // const res = await fetch(`http://localhost:4000/post/getposts`)
-        const res = await fetch(`http://localhost:4000/post/getposts?userId=${currentUser._id}`, {
+        // const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/post/getposts`)
+        const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/post/getposts?userId=${currentUser._id}`, {
           credentials: 'include',
         })
 
@@ -45,7 +45,7 @@ export default function DashPosts() {
     const startIndex = userPosts.length;
 
     try {
-      const res = await fetch(`http://localhost:4000/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`, {
+      const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`, {
         credentials: 'include',
       })
       const data = await res.json()
@@ -62,7 +62,7 @@ export default function DashPosts() {
   const handelDeletePost = async () => {
     setShowModel(false)
     try {
-      const res = await fetch(`http://localhost:4000/post/deletepost/${postIdToDelete}/${currentUser._id}`,
+      const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/post/deletepost/${postIdToDelete}/${currentUser._id}`,
         {
           method: 'DELETE',
           credentials: 'include',
@@ -101,9 +101,9 @@ export default function DashPosts() {
                     <Table.Row className='bg-white dark:border-gray-800 dark:bg-gray-800'>
                       <Table.Cell>{new Date(post.updatedAt).toLocaleDateString()}</Table.Cell>
                       <Table.Cell>
-                        <Link to={`/post/${post.slug}`}>
-                          <img src={post.image} alt={post.title} className='w-20 h-10 object-cover bg-gray-500' />
-                        </Link>
+
+                        <img src={post.image} alt={post.title} className='w-20 h-10 object-cover bg-gray-500' />
+
                       </Table.Cell>
                       <Table.Cell>
                         <Link to={`/post/${post.slug}`} className='font-medium text-gray-900 dark:text-white'>

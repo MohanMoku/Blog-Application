@@ -15,6 +15,9 @@ import CreatePost from "./pages/CreatePost";
 import UpdatePost from "./pages/UpdatePost";
 
 function App() {
+  // const serverUrl = process.env.REACT_APP_SERVER_URL;
+  // console.log(process.env.REACT_APP_SERVER_URL); // This should output the value from the .env file
+    
   return (
     <BrowserRouter>
       <Header />

@@ -97,7 +97,7 @@ export default function DashProfile() {
 
         try {
             dispatch(updateUserStart())
-            const res = await fetch(`http://localhost:4000/user/update/${currentUser._id}`, {
+            const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/${currentUser._id}`, {
                 method: 'PUT',
                 credentials: 'include',
                 headers: {
@@ -127,7 +127,7 @@ export default function DashProfile() {
         setShowModal(false)
         try {
             dispatch(deleteUserStart())
-            const res = await fetch(`http://localhost:4000/user/delete/${currentUser._id}`, {
+            const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/user/delete/${currentUser._id}`, {
                 method: 'DELETE',
                 credentials: 'include',
             })
@@ -144,7 +144,7 @@ export default function DashProfile() {
 
     const handleSignout = async () => { // Fixed typo in function name
         try {
-            const res = await fetch('http://localhost:4000/user/signout', {
+            const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/user/signout`, {
                 method: 'POST',
                 credentials: 'include',
             })

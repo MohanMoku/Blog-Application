@@ -37,7 +37,7 @@ export const updateUser = async (req, res, next) => {
 
         try {
 
-            const updatedUser =await User.findByIdAndUpdate(req.params.userId, {
+            const updatedUser = await User.findByIdAndUpdate(req.params.userId, {
                 $set: {
                     username: req.body.username,
                     email: req.body.email,
@@ -57,13 +57,13 @@ export const updateUser = async (req, res, next) => {
 }
 
 export const deleteUser = async (req, res, next) => {
-    if (req.user.id !== req.params.userId)
+    if (!req.user.isAdmin && req.user.id !== req.params.userId)
         return next(errorHandler(401, 'You can only delete your own account'))
-    
+
     try {
-        await User.findByIdAndDelete(req.params.userId)        
+        await User.findByIdAndDelete(req.params.userId)
         res.status(200).json({ message: 'User deleted successfully' })
-        
+
     } catch (error) {
         next(errorHandler(400, error.message))
     }
@@ -74,6 +74,41 @@ export const signout = async (req, res, next) => {
         res.clearCookie('access_token')
         res.status(200).json({ message: 'User signed out successfully' })
     } catch (error) {
-        next(errorHandler(400, error.message))        
+        next(errorHandler(400, error.message))
+    }
+}
+
+export const getusers = async (req, res, next) => {
+
+    if (!req.user.isAdmin) {
+        return next(errorHandler(401, 'You are not allowed see Users'))
+    }
+
+    try {
+
+        const startIndex = parseInt(req.query.startIndex) || 0;
+        const limit = parseInt(req.query.limit) || 9;
+        const srtDirection = req.query.sort === 'asc' ? 1 : -1;
+
+        const users = await User.find().sort({ createdAt: srtDirection }).skip(startIndex).limit(limit);
+
+        const usersWithOutPassword = users.map((user) => {
+            const { password, ...rest } = user._doc;
+            return rest;
+        })
+
+        const totalUsers = await User.countDocuments();
+
+        const now = new Date();
+
+        const oneMonthAgo = new Date(now.getFullYear(), now.getMonth() - 1, now.getDate());
+
+        const lastMonthUsers = await User.countDocuments({ createdAt: { $gte: oneMonthAgo } })
+
+        res.status(200).json({ users: usersWithOutPassword, totalUsers, lastMonthUsers })
+
+    } catch (error) {
+        console.log(error);
+
     }
 }

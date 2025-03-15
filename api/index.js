@@ -18,8 +18,10 @@ mongoose.connect(process.env.MONGODB_URI)
     })
 
 const app = express();
+// console.log(process.env.CLIENT_URL);
+
 app.use(cors({
-    origin: 'http://localhost:3000', // change this to your frontend URL when deploying to production
+    origin: process.env.CLIENT_URL, // change this to your frontend URL when deploying to production
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'],
