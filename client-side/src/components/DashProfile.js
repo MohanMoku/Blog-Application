@@ -1,5 +1,5 @@
 import { Alert, Button, Modal, TextInput } from 'flowbite-react'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef, useState, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import {
     updateUserFailure,
@@ -15,7 +15,7 @@ import { Link } from 'react-router-dom'
 
 export default function DashProfile() {
     // Get user state from Redux
-    const { currentUser, error, loading } = useSelector((state) => state.user)
+    const { currentUser, } = useSelector((state) => state.user)
     
     // State management
     const [imageFile, setImageFile] = useState(null)
@@ -39,15 +39,10 @@ export default function DashProfile() {
             setImageFile(file)
             setImageFileUrl(URL.createObjectURL(file))
         }
+        
     }
 
-    useEffect(() => {
-        if (imageFile) {
-            uploadImage()
-        }
-    }, [imageFile])
-
-    const uploadImage = async () => {
+    const uploadImage = useCallback(async () => {
         try {
             setImageFileUploading(true)
             setImageFileUploadError(null)
@@ -66,14 +61,20 @@ export default function DashProfile() {
             if (!res.ok) {
                 throw new Error(imageData.message || 'Could not upload image')
             }
-
             setImageFileUrl(imageData.secure_url)
+
         } catch (error) {
             setImageFileUploadError('Could not upload image (File must be less than 2MB)')
         } finally {
             setImageFileUploading(false)
         }
-    }
+    }, [imageFile]) // Add imageFile as a dependency since it's used inside the function
+
+    useEffect(() => {
+        if (imageFile) {
+            uploadImage()
+        }
+    }, [imageFile, uploadImage]) // Add uploadImage to the dependency array
 
     const handleChange = (e) => {
         setFormData({
@@ -176,6 +177,7 @@ export default function DashProfile() {
                         src={imageFileUrl || currentUser.profilePicture} 
                         alt="profile" 
                         className='rounded-full w-full h-full object-cover border-8 border-[#746e6e]' 
+                        onChange={handleImageChange}
                     />
                 </div>
 

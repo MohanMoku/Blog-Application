@@ -45,7 +45,9 @@ export default function DashPosts() {
     const startIndex = userPosts.length;
 
     try {
-      const res = await fetch(`http://localhost:4000/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`)
+      const res = await fetch(`http://localhost:4000/post/getposts?userId=${currentUser._id}&startIndex=${startIndex}`, {
+        credentials: 'include',
+      })
       const data = await res.json()
       if (res.ok) {
         setUserPosts([...userPosts, ...data.posts])
@@ -78,11 +80,11 @@ export default function DashPosts() {
 
 
   return (
-    <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500'>
+    <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumb-slate-500 w-full'>
       {
         currentUser.isAdmin && userPosts.length > 0 ? (
-          <div className='min-w-full w-[800px] md:w-auto'> {/* Added wrapper with minimum width */}
-            <Table hoverable className='shadow-md'>
+          <div className='min-w-full md:w-auto'> {/* Added wrapper with minimum width */}
+            <Table hoverable className='shadow-md w-full'>
               <Table.Head>
                 <Table.HeadCell>Date Updated</Table.HeadCell>
                 <Table.HeadCell>Post image</Table.HeadCell>
