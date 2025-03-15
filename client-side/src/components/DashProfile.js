@@ -79,10 +79,7 @@ export default function DashProfile() {
         } catch (error) {
             dispatch(updateUserFailure(error.message))
         }
-    }
-
-    console.log(imageFileUrl);
-    
+    }    
 
     return (
         <div className='max-w-lg mx-auto p-3 w-full'>
