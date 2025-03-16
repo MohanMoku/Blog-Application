@@ -116,7 +116,7 @@ export default function CommentSection({ postId }) {
         credentials: 'include',
       })
       if (res.ok) {
-        const data = await res.json()
+        // const data = await res.json()
         setComments(comments.filter((comment) => comment._id !== commentId))
       }
 
