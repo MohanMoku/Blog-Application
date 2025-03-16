@@ -6,6 +6,7 @@ import authRoute from './routes/auth.route.js'
 import postRoute from './routes/post.route.js'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
+import commentRoute from './routes/comment.route.js'
 
 dotenv.config();
 
@@ -49,6 +50,7 @@ app.use(cookieParser())
 app.use('/user', userRoute)
 app.use('/auth', authRoute)
 app.use('/post', postRoute)
+app.use('/comment', commentRoute)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT}`)
