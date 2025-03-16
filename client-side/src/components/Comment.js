@@ -32,6 +32,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
     const handleEdit = () => {
         setIsEditing(true)
         setEditedContent(comment.content)
+
     }
 
     const handleSave = async () => {
@@ -47,7 +48,7 @@ export default function Comment({ comment, onLike, onEdit, onDelete }) {
             })
 
             if (res.ok) {
-                onEdit(comment._id, editedContent)
+                onEdit(comment, editedContent)
                 setIsEditing(false)
             }
         } catch (error) {
