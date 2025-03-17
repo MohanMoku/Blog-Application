@@ -24,7 +24,7 @@ const app = express();
 // console.log(process.env.CLIENT_URL);
 
 app.use(cors({
-    origin: '*', // change this to your frontend URL when deploying to production, '*' for local testing
+    origin: process.env.CLIENT_URL, // change this to your frontend URL when deploying to production, '*' for local testing
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'],
