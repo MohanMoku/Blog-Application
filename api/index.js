@@ -1,13 +1,12 @@
-import express from 'express'
+import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
-import userRoute from './routes/user.route.js'
-import authRoute from './routes/auth.route.js'
-import postRoute from './routes/post.route.js'
-import cors from 'cors'
-import cookieParser from 'cookie-parser'
-import commentRoute from './routes/comment.route.js'
-
+import userRoute from './routes/user.route.js';
+import authRoute from './routes/auth.route.js';
+import postRoute from './routes/post.route.js';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import commentRoute from './routes/comment.route.js';
 dotenv.config();
 
 mongoose.connect(process.env.MONGODB_URI)
@@ -22,7 +21,7 @@ const app = express();
 // console.log(process.env.CLIENT_URL);
 
 app.use(cors({
-    origin: process.env.CLIENT_URL, // change this to your frontend URL when deploying to production
+    origin: '*', // change this to your frontend URL when deploying to production, '*' for local testing
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Set-Cookie'],
@@ -54,6 +53,7 @@ app.use('/comment', commentRoute)
 
 app.listen(process.env.PORT, () => {
     console.log(`Server is running on http://localhost:${process.env.PORT}`)
+    console.log(`The process id is ${process.pid}`)
 })
 
 app.use((err, req, res, next) => {

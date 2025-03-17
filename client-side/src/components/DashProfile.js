@@ -23,7 +23,9 @@ export default function DashProfile() {
     const [formData, setFormData] = useState({})
     const [imageFileUploadError, setImageFileUploadError] = useState(null)
     const [imageFileUploading, setImageFileUploading] = useState(false)
+    const [dataUploading, setDataUploading] = useState(false)
     const [updateUserDataSuccess, setUpdateUserDataSuccess] = useState(null)
+    const [imageChanged, setImageChanged] = useState(false)
     const [updateUserError, setUpdateUserError] = useState(null)
     const [showModal, setShowModal] = useState(false) // Fixed typo in variable name
     const filePickerRef = useRef()
@@ -62,6 +64,8 @@ export default function DashProfile() {
                 throw new Error(imageData.message || 'Could not upload image')
             }
             setImageFileUrl(imageData.secure_url)
+            setImageChanged(true)
+
 
         } catch (error) {
             setImageFileUploadError('Could not upload image (File must be less than 2MB)')
@@ -90,13 +94,15 @@ export default function DashProfile() {
             return
         }
 
-        if (Object.keys(formData).length === 0 && imageFileUrl === currentUser.profilePicture) {
+        if (Object.keys(formData).length === 0 && !imageChanged) {
             setUpdateUserError('No changes made')
             return
         }
-
+        
         try {
+            
             dispatch(updateUserStart())
+            setDataUploading(true)
             const res = await fetch(`${process.env.REACT_APP_SERVER_URL}/user/update/${currentUser._id}`, {
                 method: 'PUT',
                 credentials: 'include',
@@ -110,6 +116,7 @@ export default function DashProfile() {
             })
 
             const data = await res.json()
+
             if (!res.ok) {
                 throw new Error(data.message)
             }
@@ -117,6 +124,7 @@ export default function DashProfile() {
             dispatch(updateUserSuccess(data))
             setUpdateUserDataSuccess("User's profile updated successfully")
             setUpdateUserError(null)
+            setDataUploading(false)
         } catch (error) {
             dispatch(updateUserFailure(error.message))
             setUpdateUserError(error.message)
@@ -213,7 +221,7 @@ export default function DashProfile() {
                     outline 
                     disabled={imageFileUploading}
                 >
-                    {imageFileUploading ? 'Loading...' : 'Update'}
+                    {imageFileUploading || dataUploading ? 'Loading...' : 'Update'}
                 </Button>
 
                 {currentUser.isAdmin && (

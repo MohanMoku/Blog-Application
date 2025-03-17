@@ -1,6 +1,6 @@
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react'
-import { Link, useLocation } from 'react-router-dom'
-import React from 'react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import React, { useEffect, useState } from 'react'
 import { AiOutlineSearch } from 'react-icons/ai'
 import { FaMoon, FaSun } from 'react-icons/fa'
 import { useDispatch, useSelector } from 'react-redux'
@@ -13,27 +13,45 @@ const Header = () => {
   const { currentUser } = useSelector((state) => state.user)
   const dispatch = useDispatch()
   const { theme } = useSelector((state) => state.theme)
+  const [searchTerm, setSearchTerm] = useState('')
+  const location = useLocation()
+  const navigate = useNavigate()
 
   const handelSignout = async () => {
-          try {
-              const res = await fetch('http://localhost:4000/user/signout', {
-                  method: 'POST',
-                  credentials: 'include',
-              })
-              const data = await res.json()
-              if (!res.ok) {
-                  console.log(data.message);
-              }
-              else{
-                  dispatch(signoutSuccess())
-              }
-  
-          } catch (error) {
-              console.log(error);
-              
-          }
+    try {
+      const res = await fetch('http://localhost:4000/user/signout', {
+        method: 'POST',
+        credentials: 'include',
+      })
+      const data = await res.json()
+      if (!res.ok) {
+        console.log(data.message);
+      }
+      else {
+        dispatch(signoutSuccess())
       }
 
+    } catch (error) {
+      console.log(error);
+
+    }
+  }
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('searchTerm', searchTerm);
+    navigate(`/search?${urlParams.toString()}`);
+  }
+  
   return (
     <Navbar className='border-b-2'>
       <Link to={'/'} className='self-center whitespace-nowrap text-sm sm:text-xl font-semibold dark:text-white'>
@@ -43,12 +61,14 @@ const Header = () => {
         Blog
       </Link>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <TextInput
           type='text'
           placeholder='Search...'
           rightIcon={AiOutlineSearch}
           className='hidden lg:inline'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
 

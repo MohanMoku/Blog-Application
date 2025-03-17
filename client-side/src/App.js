@@ -15,6 +15,7 @@ import CreatePost from "./pages/CreatePost";
 import UpdatePost from "./pages/UpdatePost";
 import PostPage from "./pages/PostPage";
 import ScrollToTop from "./components/ScrollToTop";
+import Search from "./pages/Search";
 
 function App() {
   // const serverUrl = process.env.REACT_APP_SERVER_URL;
@@ -28,6 +29,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path='/sign-up' element={<SignUp />} />
         <Route path='/sign-in' element={<SignIn />} />
+        <Route path='/search' element={<Search />} />
         <Route path='/projects' element={<Projects />} />
         <Route path='/post/:postSlug' element={<PostPage />} />
         <Route element={<PrivateRoute />}>
