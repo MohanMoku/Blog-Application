@@ -7,6 +7,8 @@ import postRoute from './routes/post.route.js';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import commentRoute from './routes/comment.route.js';
+import path from 'path';
+
 dotenv.config();
 
 mongoose.connect(process.env.MONGODB_URI)
@@ -17,6 +19,7 @@ mongoose.connect(process.env.MONGODB_URI)
         console.log('Error connecting to MongoDB', err)
     })
 
+    const __dirname = path.resolve();
 const app = express();
 // console.log(process.env.CLIENT_URL);
 
@@ -51,10 +54,11 @@ app.use('/auth', authRoute)
 app.use('/post', postRoute)
 app.use('/comment', commentRoute)
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server is running on http://localhost:${process.env.PORT}`)
-    console.log(`The process id is ${process.pid}`)
-})
+app.use(express.static(path.join(__dirname, '/client-side/build')));
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '/client-side/build/index.html'));
+});
 
 app.use((err, req, res, next) => {
     const statusCode = err.statusCode || 500
@@ -64,4 +68,9 @@ app.use((err, req, res, next) => {
         statusCode,
         message
     })
+})
+
+app.listen(process.env.PORT, () => {
+    console.log(`Server is running on http://localhost:${process.env.PORT}`)
+    console.log(`The process id is ${process.pid}`)
 })
